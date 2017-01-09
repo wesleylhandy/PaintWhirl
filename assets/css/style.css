@@ -7,12 +7,31 @@ body {
 	height: 100%;
 }
 
+#buttons {
+	position: absolute;
+	left: 1em;
+	top: 1em;
+	width: 100px;
+	border: 1px solid black;
+	border-radius: 5px;
+	padding: 10px;
+	text-align: center;
+}
+
+.btn {
+	margin: auto;
+	margin-bottom: .25em;
+	text-align: center;
+	height: 2.5em;
+}
+
 #canvas-wrapper {
 	border: 3px solid #000;
 	width: 550px;
 	margin: 1em auto;
 	padding: 100px;
 	border-radius: 275px;
+	background-image: radial-gradient(black 0%, blue 55%);
 }
 
 canvas {
@@ -21,4 +40,5 @@ canvas {
 /*	align-items: center;*/
 /*	width: 300px;
 	height: 300px;*/
+	background-color: #ccc;
 }
