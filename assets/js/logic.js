@@ -106,7 +106,7 @@ $(document).ready(function(){
 		//points = convertPoint(points.x, points.y); 
 		console.log("Mousepos at X: " + points.x + " & Y: " + points.y);
 		if (spinning) {
-			$("#canvas-wrapper").css("background-image", 'radial-gradient(black 0%, blue 55%, ' + color + ' 70%)');
+			$("#canvas-wrapper").css("background-image", 'radial-gradient(black 0%, grey 55%, ' + color + ' 70%)');
 			dripPaint(points.x, points.y);	
 		}
 	});
