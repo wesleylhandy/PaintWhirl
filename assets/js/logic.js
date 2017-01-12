@@ -1,9 +1,24 @@
-localStorage.clear();
+
 var degree = 359; //initialize degrees)
 var color = "rgba(0,0,255,0.90)"; // initial color
 var counter = 0; //used to store data in a numbered array
 var canvasArray = []; //used to push data to local storage for completed pic
 var spinning = false; //control for paint and storing functions
+
+// Initialize Firebase
+var config = {
+	apiKey: "AIzaSyBmUiZcB2Fz-beoyN6lhNNv1R4o9G3t60g",
+	authDomain: "paintwhirl.firebaseapp.com",
+	databaseURL: "https://paintwhirl.firebaseio.com",
+	storageBucket: "paintwhirl.appspot.com",
+	messagingSenderId: "987352983785"
+};
+
+firebase.initializeApp(config);
+
+//set database
+
+var database=firebase.database();
 
 $(document).ready(function(){
 
@@ -27,6 +42,7 @@ $(document).ready(function(){
 	8. allow users to pring to pdf
 	9. allow users to tweet image of whirl
 	10. style the background and controls
+	11. change mouseover to mousepress/mousedown/mouseup
 
 	*/
 
@@ -119,24 +135,28 @@ $(document).ready(function(){
 		// console.log("Mousepos at X: " + points.x + " & Y: " + points.y);
 
 		if (spinning) {
+			
+			// document.onmousedown = function() {
+				//convert points relative to the degree of spin on the canvas
+				//will return converted points, plus coordinates for teardrop, as object
+				points = convertPoint(points.x, points.y); 
 
-			//convert points relative to the degree of spin on the canvas
-			//will return converted points, plus coordinates for teardrop, as object
-			points = convertPoint(points.x, points.y); 
-
-			//painting on canvas only if canvas is in spin mode
-			$("#canvas-wrapper").css("background-image", 'radial-gradient(#000 0%, #555 55%, ' + color + ' 70%)');
-			dripPaint(points);	
+				//painting on canvas only if canvas is in spin mode
+				$("#canvas-wrapper").css("background-image", 'radial-gradient(#000 0%, #555 55%, ' + color + ' 70%)');
+				dripPaint(points);	
+			// }
 		}
 	});
 
 	function convertPoint(x,y){
 
 		//convert static points to translated points on a rotated canvas
-		//note: canvas x,y is inverted 
+			//note: canvas x,y is inverted
+			 
 	    xPrime = x * Math.cos(radians(degree)) - y * Math.sin(radians(degree));
 	    yPrime = x * Math.sin(radians(degree)) + y * Math.cos(radians(degree));
-
+	    // xPrime = x;
+	    // yPrime = y;
 	    //formulas for calculating a point a set distance along a line
 		//given x, y, distance, and slope
 			//x1 = x +- sqrt(distance^2/(1 + slope^2))
@@ -182,12 +202,15 @@ $(document).ready(function(){
 		// console.log("point3= " + x3 + ', ' + y3); 
 
 		//store coordinates in local storage
-		var drop = {coords: {m: m, m1: m1, 
-								d0: d0, d1: d1, d2: d2, 
-								x: xPrime, x0: x0, x1: x1, x2: x2, x3: x3, 
-								y: yPrime, y0: y0, y1: y1, y2: y2, y3: y3, 
-								color: color}};
-		console.log(drop);
+		var drop = {coords: {
+								"m": m, "m1": m1, 
+								"d0": d0, "d1": d1, "d2": d2, 
+								"x": xPrime, "x0": x0, "x1": x1, "x2": x2, "x3": x3, 
+								"y": yPrime, "y0": y0, "y1": y1, "y2": y2, "y3": y3, 
+								"color": color, "degree": degree
+							}
+						};
+		// console.log(drop);
 		canvasArray.push(drop);
 
 	    return drop;
@@ -228,6 +251,13 @@ $(document).ready(function(){
 
 	function drawMiniWhirl (obj) {
 
+		var whirl = JSON.parse(localStorage.getItem("canvas0"));
+		console.log(whirl);
+		for (let x=0; x < whirl.length; x++) {
+			ctx.rotate(radians(whirl[x].coords.degree));
+			dripPaint(whirl[x]);
+			ctx.rotate(0);
+		}
 	}
 
 	//get canvas and context
@@ -257,8 +287,17 @@ $(document).ready(function(){
 	$("#spin-btn").on("click", function(){
 		if (!spinning) { // prevent multiple intervals
 			spinning = true;
+
+
+			
 			spin = setInterval(spinCanvas, 1); //continuously spin
-			// spinCanvas(); // spin one degree
+			
+			//TESTING
+
+			// for (let x=0; x<45; x++){
+			// 	spinCanvas(); // spin one degree
+
+			// }
 		}
 	});
 
@@ -282,6 +321,14 @@ $(document).ready(function(){
 		ctx = canvas.getContext("2d");
 		ctx.translate(width/2, height/2);
 		drawCenterPoint();
+	});
+
+	$("#restore-btn").on("click", function(){
+		canvasArray = [];
+		canvas.width = canvas.width;
+		ctx = canvas.getContext("2d");
+		ctx.translate(width/2, height/2);
+		drawMiniWhirl();
 	});
 
 	$("#blue").on("click", function(){
