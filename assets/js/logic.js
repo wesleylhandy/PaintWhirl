@@ -27,6 +27,7 @@ $(document).ready(function(){
 	var year = d.getFullYear();
 	$("#year").text(year);
 
+	$("#main-title").lettering();
 	//TO DO
 
 	/* 
@@ -249,10 +250,11 @@ $(document).ready(function(){
 		ctx.stroke();
 	}
 
-	function drawMiniWhirl (obj) {
+	function restoreToMainCanvas (obj) {
 
 		var whirl = JSON.parse(localStorage.getItem("canvas0"));
 		console.log(whirl);
+		drawCenterPoint();
 		for (let x=0; x < whirl.length; x++) {
 			ctx.rotate(radians(whirl[x].coords.degree));
 			dripPaint(whirl[x]);
@@ -328,7 +330,7 @@ $(document).ready(function(){
 		canvas.width = canvas.width;
 		ctx = canvas.getContext("2d");
 		ctx.translate(width/2, height/2);
-		drawMiniWhirl();
+		restoreToMainCanvas();
 	});
 
 	$("#blue").on("click", function(){
