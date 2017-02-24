@@ -16,4 +16,4 @@ The user can stop the spinning of the canvas and save the current state of the c
 
 This app currently utilizes `localstorage()` but will be moved over to `firebase()` in time. The goal is to allow users to create, store and view created images.
 
-This will also require implementation of some sort of federated log-in. Email, Google, Facebook or Twitter are all supported by Firebase. This feature will in future developments.
+This will also require implementation of some sort of federated log-in. Email, Google, Facebook or Twitter are all supported by Firebase. This feature will appear in future developments.
